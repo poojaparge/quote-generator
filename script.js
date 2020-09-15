@@ -1,3 +1,4 @@
+// Getting DOM Elements
 const quoteContainer = document.getElementById('quote-container');
 const quoteText = document.getElementById('quote');
 const authorText = document.getElementById('author');
@@ -5,47 +6,43 @@ const twitterBtn = document.getElementById('twitter');
 const newQuoteBtn = document.getElementById('new-quote');
 const loader = document.getElementById('loader');
 
-// Show Loading
-function loading() {
+function showLoadingSpinner() {
     loader.hidden = false;
     quoteContainer.hidden = true;
 }
 
-// Hide Loading
-function complete() {
+function removeLoadingSpinner() {
     if (!loader.hidden) {
         quoteContainer.hidden = false;
         loader.hidden = true;
     }
 }
 
-// Get Quote from API
-async function getQuote() {
-    loading();
+async function getQuoteFromAPI() {
+    showLoadingSpinner();
     const proxyUrl = 'https://limitless-depths-74187.herokuapp.com/'
     const apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
     try {
         const response = await fetch(proxyUrl + apiUrl);
-        const data = await response.json();
+        const jsonData = await response.json();
         
         // If Author is blank, add 'Unknown'
-        if(data.quoteAuthor === '') {
+        if(jsonData.quoteAuthor === '') {
             authorText.innerText = 'Unknown';
         } else {
-            authorText.innerText = data.quoteAuthor;
+            authorText.innerText = jsonData.quoteAuthor;
         }
 
         // Reduce font size for long quotes
-        if (data.quoteText.length > 120) {
+        if (jsonData.quoteText.length > 120) {
             quoteText.classList.add('long-quote');
         } else {
             quoteText.classList.remove('long-quote');
         }
-        quoteText.innerText = data.quoteText;
-        //Stop Loader, Show Quote
-        complete();
+        quoteText.innerText = jsonData.quoteText;
+        removeLoadingSpinner();
     } catch (error) {
-        getQuote();
+        getQuoteFromAPI();
     }
 }
 
@@ -62,4 +59,4 @@ newQuoteBtn.addEventListener('click', getQuote);
 twitterBtn.addEventListener('click', tweetQuote);
 
 // On Load
-getQuote();
+getQuoteFromAPI();
