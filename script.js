@@ -25,7 +25,6 @@ async function getQuoteFromAPI() {
     try {
         const response = await fetch(proxyUrl + apiUrl);
         const jsonData = await response.json();
-        
         // If Author is blank, add 'Unknown'
         if(jsonData.quoteAuthor === '') {
             authorText.innerText = 'Unknown';
@@ -55,7 +54,7 @@ function tweetQuote() {
 }
 
 // Event Listeners
-newQuoteBtn.addEventListener('click', getQuote);
+newQuoteBtn.addEventListener('click', getQuoteFromAPI);
 twitterBtn.addEventListener('click', tweetQuote);
 
 // On Load
